@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-canvas-link-to-group",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Create links to specific groups in Obsidian Canvas and jump directly to them.",
 	"main": "main.js",
 	"scripts": {

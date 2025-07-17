@@ -1,4 +1,4 @@
-import { Plugin, TFile, Notice, WorkspaceLeaf } from 'obsidian';
+import { Plugin, TFile, Notice, WorkspaceLeaf, Menu, ItemView } from 'obsidian';
 
 export default class CanvasLinkToGroupPlugin extends Plugin {
 
@@ -6,13 +6,9 @@ export default class CanvasLinkToGroupPlugin extends Plugin {
 		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
 			const target = evt.target as HTMLElement;
 
-			// The user might click on an element inside the link, so we look for the closest ancestor `a` tag.
 			const link = target.closest('a');
 			if (!link) return;
 
-			// In Live Preview/Reading mode, the link destination is in the 'data-href' attribute.
-			// In Source Mode, it is the text content of the link itself.
-			// We check for data-href first, and fall back to textContent.
 			const linkTextFromData = link.getAttribute('data-href');
 			const linkTextFromContent = link.textContent;
 			const linkText = linkTextFromData || linkTextFromContent;
@@ -22,10 +18,47 @@ export default class CanvasLinkToGroupPlugin extends Plugin {
 				this.handleCanvasLink(linkText);
 			}
 		}, { capture: true });
+
+		this.registerEvent(
+			this.app.workspace.on('canvas:node-menu' as any, this.addCopyToClipboardMenuItem)
+		);
 	}
 
 	onunload() {
+		this.app.workspace.off('canvas:node-menu' as any, this.addCopyToClipboardMenuItem);
+	}
 
+	addCopyToClipboardMenuItem = (menu: Menu, node: any) => {
+		if (node.unknownData?.type !== 'group') {
+			return;
+		}
+
+		const activeView = this.app.workspace.getActiveViewOfType(ItemView);
+		if (!activeView || activeView.getViewType() !== 'canvas') {
+			return;
+		}
+
+		const canvasView = activeView as any;
+		const canvasFile = canvasView.file;
+		if (!canvasFile) {
+			return;
+		}
+
+		menu.addItem((item) => {
+			item
+				.setTitle("Copy link to group")
+				.setIcon("link")
+				.onClick(() => {
+					const canvasPath = canvasFile.name; // Use .name instead of .path
+					const groupName = node.label;
+					const linkText = `[[${canvasPath}#group:${groupName}]]`;
+					
+					console.log("Copying to clipboard:", linkText); // Add this log
+
+					navigator.clipboard.writeText(linkText);
+					new Notice(`Copied link to group "${groupName}"`);
+				});
+		});
 	}
 
 	async handleCanvasLink(linkText: string) {
@@ -76,7 +109,7 @@ export default class CanvasLinkToGroupPlugin extends Plugin {
 				);
 
 				if (groupNode) {
-					// These are the correct, documented methods to focus on a node.
+					// These are the correct, undocumented methods to focus on a node.
 					canvas.selectOnly(groupNode);
 					canvas.zoomToSelection();
 				} else {

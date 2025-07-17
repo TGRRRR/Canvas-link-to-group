@@ -4,6 +4,8 @@ This plugin for Obsidian allows you to create direct links to groups within a ca
 
 ## How to Use
 
+### Linking to a Group
+
 1.  **Create a Canvas**: Make a new canvas in Obsidian.
 2.  **Create Groups**: Inside the canvas, create one or more groups and give them unique names (e.g., "My Ideas", "Project Steps").
 3.  **Create a Link**: In any markdown note, create a link with the following format:
@@ -15,6 +17,13 @@ This plugin for Obsidian allows you to create direct links to groups within a ca
     `[[ProjectPlan.canvas#group:Phase 1]]`
     
 4.  **Click the Link**: Click the link in your note. The plugin will open the `ProjectPlan.canvas` and automatically navigate to the "Phase 1" group.
+
+### Copying a Link to a Group
+
+1.  Open a canvas.
+2.  Right-click on the group you want to link to.
+3.  Select "Copy link to group" from the context menu.
+4.  The link will be copied to your clipboard, ready to be pasted into any note.
 
 ## Installation
 
