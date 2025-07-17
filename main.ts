@@ -31,7 +31,10 @@ export default class CanvasLinkToGroupPlugin extends Plugin {
 	async handleCanvasLink(linkText: string) {
 		const [canvasPath, groupNameEncoded] = linkText.split('#group:');
 		const groupName = decodeURIComponent(groupNameEncoded);
-		const canvasFile = this.app.vault.getAbstractFileByPath(canvasPath);
+		
+		const sourceFile = this.app.workspace.getActiveFile();
+		const sourcePath = sourceFile ? sourceFile.path : '';
+		const canvasFile = this.app.metadataCache.getFirstLinkpathDest(canvasPath, sourcePath);
 
 		if (!(canvasFile instanceof TFile)) {
 			new Notice(`Canvas file not found: ${canvasPath}`);
