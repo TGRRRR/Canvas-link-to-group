@@ -14,8 +14,19 @@ export default class CanvasLinkToGroupPlugin extends Plugin {
 			const linkText = linkTextFromData || linkTextFromContent;
 
 			if (linkText && linkText.includes('.canvas#group:')) {
+				// Find source path from the DOM element context for robust link resolution
+				const sourceElement = target.closest('[data-source-path]');
+				let sourcePath = '';
+				if (sourceElement) {
+					sourcePath = sourceElement.getAttribute('data-source-path') || '';
+				} else {
+					// Fallback to active file if source path is not in the DOM
+					const activeFile = this.app.workspace.getActiveFile();
+					if (activeFile) sourcePath = activeFile.path;
+				}
+
 				evt.preventDefault(); // Prevent Obsidian's default link handling.
-				this.handleCanvasLink(linkText);
+				this.handleCanvasLink(linkText, sourcePath);
 			}
 		}, { capture: true });
 
@@ -52,75 +63,60 @@ export default class CanvasLinkToGroupPlugin extends Plugin {
 					const canvasPath = canvasFile.name; // Use .name instead of .path
 					const groupName = node.label;
 					const linkText = `[[${canvasPath}#group:${groupName}]]`;
-					
-					console.log("Copying to clipboard:", linkText); // Add this log
-
 					navigator.clipboard.writeText(linkText);
 					new Notice(`Copied link to group "${groupName}"`);
 				});
 		});
 	}
 
-	async handleCanvasLink(linkText: string) {
-		const [canvasPath, groupNameEncoded] = linkText.split('#group:');
-		const groupName = decodeURIComponent(groupNameEncoded);
-		
-		const sourceFile = this.app.workspace.getActiveFile();
-		const sourcePath = sourceFile ? sourceFile.path : '';
-		const canvasFile = this.app.metadataCache.getFirstLinkpathDest(canvasPath, sourcePath);
-
-		if (!(canvasFile instanceof TFile)) {
-			new Notice(`Canvas file not found: ${canvasPath}`);
+	async handleCanvasLink(linkText: string, sourcePath: string) {
+		const parts = linkText.split('#group:');
+		if (parts.length < 2 || !parts[1]) {
 			return;
 		}
 
-		let leaf: WorkspaceLeaf | undefined = this.app.workspace.getLeavesOfType('canvas').find(l => {
-			const view = (l.view as any);
-			return view.file === canvasFile;
-		});
+		const [canvasPath, groupNameEncoded] = parts;
+		const groupName = decodeURIComponent(groupNameEncoded);
 
-		if (leaf) {
-			this.app.workspace.setActiveLeaf(leaf, { focus: true });
-		} else {
-			leaf = this.app.workspace.getLeaf(true);
-			await leaf.openFile(canvasFile);
+		// Use Obsidian's native link handling to open the canvas.
+		// This is the most reliable way to ensure the correct file is opened.
+		await this.app.workspace.openLinkText(canvasPath, sourcePath, false);
+
+		// After opening, the correct canvas should be the active view.
+		const activeView = this.app.workspace.getActiveViewOfType(ItemView);
+		if (!activeView || activeView.getViewType() !== 'canvas') {
+			new Notice("Could not jump to group: Active view is not a canvas.");
+			return;
 		}
 
-		this.jumpToGroup(groupName, leaf);
+		this.jumpToGroup(groupName, activeView.leaf);
 	}
 
 	jumpToGroup(groupName: string, leaf: WorkspaceLeaf) {
 		const canvasView = leaf.view as any;
 		
-		// The canvas data is not always immediately available, so we wait for it.
-		// We use an interval to check until the canvas is ready.
+		let retries = 50; // 5 seconds timeout (50 * 100ms)
 		const interval = setInterval(() => {
-			// The `canvas` object is the key to interacting with the canvas.
+			retries--;
 			const canvas = canvasView.canvas;
-			if (!canvas) return;
-			
-			// `canvas.nodes` holds all the nodes in the canvas.
-			// We check if it's populated before trying to find our group.
-			if (canvas.nodes && canvas.nodes.size > 0) {
-				clearInterval(interval); // Stop checking once we have the nodes.
 
-				const groupNode = Array.from(canvas.nodes.values()).find(
-					(node: any) => node.unknownData?.type === 'group' && node.label === groupName
-				);
-
-				if (groupNode) {
-					// These are the correct, undocumented methods to focus on a node.
-					canvas.selectOnly(groupNode);
-					canvas.zoomToSelection();
-				} else {
-					new Notice(`Group "${groupName}" not found in the canvas.`);
+			if (!canvas || !canvas.nodes || retries <= 0) {
+				clearInterval(interval);
+				if (retries <= 0) {
+					new Notice(`Group "${groupName}" not found in canvas (timed out).`);
 				}
+				return;
 			}
-		}, 100); // Check every 100ms.
+			
+			const groupNode = Array.from(canvas.nodes.values()).find(
+				(node: any) => node.unknownData?.type === 'group' && node.label === groupName
+			);
 
-		// Failsafe to stop the interval after a while if the canvas never loads.
-		setTimeout(() => {
-			clearInterval(interval);
-		}, 5000);
+			if (groupNode) {
+				clearInterval(interval);
+				canvas.selectOnly(groupNode);
+				canvas.zoomToSelection();
+			}
+		}, 100);
 	}
 }
