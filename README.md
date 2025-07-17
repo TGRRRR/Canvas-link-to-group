@@ -71,3 +71,6 @@ Once this plugin is approved by the Obsidian team, you will be able to install i
 5.  In Obsidian, go to **Settings** > **Community plugins**.
 6.  Make sure "Restricted mode" is turned off. You should now see "Canvas Link to Group" in your list of installed plugins.
 7.  Click the "Reload plugins" button and then toggle the switch to enable it.
+
+# Attribution
+Based on the [Obsidian Sample Plugin template](https://github.com/obsidianmd/obsidian-sample-plugin)
