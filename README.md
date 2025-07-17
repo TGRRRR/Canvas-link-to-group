@@ -1,41 +1,66 @@
 # Obsidian Canvas Link to Group
 
-This plugin for Obsidian allows you to create direct links to groups within a canvas, and when you click them, the canvas will automatically open and pan to that specific group.
+This plugin enhances Obsidian's Canvas by allowing you to create direct links to specific groups within any canvas file. It provides multiple ways to create and use these links, making it a powerful tool for navigating large and complex canvases.
+
+## Features
+
+**Direct Linking to Groups**
+Jump directly to any group in a canvas from a link in your notes.
+
+**Intelligent Link Handling**
+The plugin provides flexible navigation options. **Left-click** a link to open the canvas in the current tab, or **`Ctrl/Cmd + Click`** (or **Middle-click**) to open it in a new tab.
+
+**Easy Link Creation**
+Create links effortlessly. You can either **right-click** any group and select "Copy link to group," or select a single group and use the "Copy link to selected group" command from the Command Palette. For keyboard-driven workflows, you can assign a custom hotkey to the command.
+
+**Smart Notifications**
+The plugin provides helpful feedback. It will notify you if you try to copy a link without a group selected, or if you jump to a group name that is used multiple times in the same canvas.
 
 ## How to Use
 
-### Linking to a Group
+### Creating a Link to a Group
 
-1.  **Create a Canvas**: Make a new canvas in Obsidian.
-2.  **Create Groups**: Inside the canvas, create one or more groups and give them unique names (e.g., "My Ideas", "Project Steps").
-3.  **Create a Link**: In any markdown note, create a link with the following format:
-    
-    `[[YourCanvasName.canvas#group:YourGroupName]]`
-    
-    For example:
-    
-    `[[ProjectPlan.canvas#group:Phase 1]]`
-    
-4.  **Click the Link**:
-    *   **Left-click** to open the canvas in the **current tab** and jump to the group.
-    *   **Middle-click** (or `Ctrl/Cmd + click`) to open the canvas in a **new tab** and jump to the group.
+There are two primary ways to create a link to a group:
 
-### Copying a Link to a Group
+#### 1. Context Menu (Right-Click)
+
+This is the most direct method.
 
 1.  Open a canvas.
 2.  Right-click on the group you want to link to.
-3.  Select "Copy link to group" from the context menu.
-4.  The link will be copied to your clipboard, ready to be pasted into any note.
+3.  Select **Copy link to group**.
+4.  Paste the link (e.g., `[[MyCanvas.canvas#GroupName]]`) into any note.
+
+#### 2. Command Palette
+
+This method is ideal for keyboard-driven workflows.
+
+1.  Open a canvas and select a single group.
+2.  Open the command palette (`Ctrl/Cmd + P`).
+3.  Search for "Copy link to selected group" and run the command.
+4.  Paste the link into any note.
+
+> **Pro Tip**: For even faster access, assign a custom hotkey to this command (e.g., `Ctrl/Cmd + Shift + C`) in Obsidian's `Settings` > `Hotkeys`.
+
+### Using the Link
+
+Once you have a link in a note (e.g., `[[MyProject.canvas#Design Phase]]`), you can click on it:
+
+- **Left-click**: Opens `MyProject.canvas` in your current tab and jumps to the "Design Phase" group.
+- **`Ctrl/Cmd + Click`** or **Middle-click**: Opens the canvas in a new tab and jumps to the group.
 
 ## Installation
 
-Once this plugin is available in the community plugin browser, you will be able to install it from there. For now, you can install it manually:
+### From Obsidian Community Plugins (Coming Soon)
 
-1.  Download the `main.js`, `manifest.json`, and `styles.css` files from the latest release.
-2.  In your Obsidian vault, go to `Settings` > `Community plugins`.
-3.  Make sure "Restricted mode" is off.
-4.  Open the plugins folder by clicking the small folder icon.
-5.  Create a new folder named `canvas-link-to-group`.
-6.  Copy the downloaded files into this new folder.
-7.  Go back to the Community Plugins settings page and click the "Reload plugins" button.
-8.  Enable the "Canvas Link to Group" plugin.
+Once this plugin is approved by the Obsidian team, you will be able to install it directly from the community plugin browser.
+
+### Manual Installation
+
+1.  Download the `main.js`, `manifest.json`, and `styles.css` files from the latest [GitHub release](https://github.com/quorafind/obsidian-canvas-link-to-group/releases/latest).
+2.  Navigate to your Obsidian vault's plugins folder: `<YourVault>/.obsidian/plugins/`.
+3.  Create a new folder inside `plugins` and name it `canvas-link-to-group`.
+4.  Copy the downloaded files into this new folder.
+5.  In Obsidian, go to **Settings** > **Community plugins**.
+6.  Make sure "Restricted mode" is turned off. You should now see "Canvas Link to Group" in your list of installed plugins.
+7.  Click the "Reload plugins" button and then toggle the switch to enable it.
