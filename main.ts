@@ -3,9 +3,11 @@ import { Plugin, TFile, Notice, WorkspaceLeaf, Menu, ItemView } from 'obsidian';
 export default class CanvasLinkToGroupPlugin extends Plugin {
 
 	async onload() {
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			const target = evt.target as HTMLElement;
+		this.registerDomEvent(document, 'mousedown', (evt: MouseEvent) => {
+			// Only handle left-clicks and middle-clicks
+			if (evt.button !== 0 && evt.button !== 1) return;
 
+			const target = evt.target as HTMLElement;
 			const link = target.closest('a');
 			if (!link) return;
 
@@ -14,6 +16,10 @@ export default class CanvasLinkToGroupPlugin extends Plugin {
 			const linkText = linkTextFromData || linkTextFromContent;
 
 			if (linkText && linkText.includes('.canvas#group:')) {
+				// Prevent Obsidian's default navigation and stop other listeners.
+				evt.preventDefault();
+				evt.stopImmediatePropagation();
+				
 				// Find source path from the DOM element context for robust link resolution
 				const sourceElement = target.closest('[data-source-path]');
 				let sourcePath = '';
@@ -25,8 +31,8 @@ export default class CanvasLinkToGroupPlugin extends Plugin {
 					if (activeFile) sourcePath = activeFile.path;
 				}
 
-				evt.preventDefault(); // Prevent Obsidian's default link handling.
-				this.handleCanvasLink(linkText, sourcePath);
+				const openInNewTab = evt.button === 1 || evt.ctrlKey || evt.metaKey;
+				this.handleCanvasLink(linkText, sourcePath, openInNewTab);
 			}
 		}, { capture: true });
 
@@ -69,7 +75,7 @@ export default class CanvasLinkToGroupPlugin extends Plugin {
 		});
 	}
 
-	async handleCanvasLink(linkText: string, sourcePath: string) {
+	async handleCanvasLink(linkText: string, sourcePath: string, newLeaf: boolean) {
 		const parts = linkText.split('#group:');
 		if (parts.length < 2 || !parts[1]) {
 			return;
@@ -78,18 +84,15 @@ export default class CanvasLinkToGroupPlugin extends Plugin {
 		const [canvasPath, groupNameEncoded] = parts;
 		const groupName = decodeURIComponent(groupNameEncoded);
 
-		// Use Obsidian's native link handling to open the canvas.
-		// This is the most reliable way to ensure the correct file is opened.
-		await this.app.workspace.openLinkText(canvasPath, sourcePath, false);
+		// Use Obsidian's native link handling. It will open in a new leaf if `newLeaf` is true.
+		await this.app.workspace.openLinkText(canvasPath, sourcePath, newLeaf);
 
-		// After opening, the correct canvas should be the active view.
-		const activeView = this.app.workspace.getActiveViewOfType(ItemView);
-		if (!activeView || activeView.getViewType() !== 'canvas') {
-			new Notice("Could not jump to group: Active view is not a canvas.");
-			return;
+		// After `await`, the new view should be open and active. We get the active leaf
+		// and pass it to jumpToGroup, which has a retry mechanism.
+		const activeLeaf = this.app.workspace.activeLeaf;
+		if (activeLeaf) {
+			this.jumpToGroup(groupName, activeLeaf);
 		}
-
-		this.jumpToGroup(groupName, activeView.leaf);
 	}
 
 	jumpToGroup(groupName: string, leaf: WorkspaceLeaf) {

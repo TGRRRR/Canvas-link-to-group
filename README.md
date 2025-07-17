@@ -16,7 +16,9 @@ This plugin for Obsidian allows you to create direct links to groups within a ca
     
     `[[ProjectPlan.canvas#group:Phase 1]]`
     
-4.  **Click the Link**: Click the link in your note. The plugin will open the `ProjectPlan.canvas` and automatically navigate to the "Phase 1" group.
+4.  **Click the Link**:
+    *   **Left-click** to open the canvas in the **current tab** and jump to the group.
+    *   **Middle-click** (or `Ctrl/Cmd + click`) to open the canvas in a **new tab** and jump to the group.
 
 ### Copying a Link to a Group
 
