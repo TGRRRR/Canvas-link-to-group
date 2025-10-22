@@ -1,4 +1,4 @@
-# Obsidian Canvas Link to Group
+# Canvas Link to Group
 
 This plugin enhances Obsidian's Canvas by allowing you to create direct links to specific groups within any canvas file. It provides multiple ways to create and use these links, making it a powerful tool for navigating large and complex canvases.
 

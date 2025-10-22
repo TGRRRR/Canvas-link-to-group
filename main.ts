@@ -84,10 +84,6 @@ export default class CanvasLinkToGroupPlugin extends Plugin {
 		this.registerEditorSuggest(new GroupSuggest(this.app));
 	}
 
-	onunload() {
-		this.app.workspace.off('canvas:node-menu' as any, this.addCopyToClipboardMenuItem);
-	}
-
 	// CONTEXT MENU HANDLER
 	addCopyToClipboardMenuItem = (menu: Menu, node: any) => {
 		if (node.unknownData?.type !== 'group') {
@@ -126,10 +122,10 @@ export default class CanvasLinkToGroupPlugin extends Plugin {
 
 		await this.app.workspace.openLinkText(canvasPath, sourcePath, newLeaf);
 		
-		const activeLeaf = this.app.workspace.activeLeaf;
-		if (activeLeaf) {
-			this.jumpToGroup(groupName, activeLeaf);
-		}
+		const activeView = this.app.workspace.getActiveViewOfType(ItemView);
+		if (activeView) {
+			this.jumpToGroup(groupName, activeView.leaf);
+		}		
 	}
 
 	// JUMP TO GROUP LOGIC
@@ -207,7 +203,7 @@ class GroupSuggest extends EditorSuggest<string> {
 		if (!canvasFile) return [];
 
 		try {
-			const fileContent = await this.app.vault.read(canvasFile);
+			const fileContent = await this.app.vault.cachedRead(canvasFile);
 			const canvasData = JSON.parse(fileContent);
 
 			if (!canvasData.nodes || !Array.isArray(canvasData.nodes)) return [];

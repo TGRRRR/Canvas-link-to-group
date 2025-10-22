@@ -1,11 +1,10 @@
 {
 	"id": "canvas-link-to-group",
 	"name": "Canvas Link to Group",
-	"version": "0.0.4",
-	"minAppVersion": "0.15.0",
-	"description": "Create links to specific groups in Obsidian Canvas and jump directly to them.",
+	"version": "0.0.5",
+	"minAppVersion": "1.8.10",
+	"description": "Create links to specific groups in Canvas and jump directly to them.",
 	"author": "TGRRRR",
 	"authorUrl": "https://github.com/tgrrrr",
-	"fundingUrl": "",
 	"isDesktopOnly": false
 }
