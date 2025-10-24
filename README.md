@@ -1,6 +1,7 @@
 # Canvas Link to Group
 
 This plugin enables you to create links to specific groups within Canvases and jump to them in 1 click!
+
 ![Usecase](<Use Example.gif>)
 
 # Features
@@ -12,6 +13,7 @@ Jump directly to any group in a canvas from a link in your notes.
 The plugin provides flexible navigation options:
  - **Left-click** a link to open the canvas in the current tab
  - **`Ctrl/Cmd + Click`** (or **Middle-click**) to open it in a new tab.
+
 ![Link Handling](<Features Example.gif>)
 
 ### Easy Link Creation
