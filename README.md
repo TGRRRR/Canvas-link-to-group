@@ -1,6 +1,7 @@
 # Canvas Link to Group
 
-This plugin enhances Obsidian's Canvas by allowing you to create direct links to specific groups within any canvas file. It provides multiple ways to create and use these links, making it a powerful tool for navigating large and complex canvases.
+This plugin enables you to create links to specific groups within Canvases and jump to them in 1 click!
+![Usecase](<Use Example.gif>)
 
 # Features
 
@@ -11,6 +12,7 @@ Jump directly to any group in a canvas from a link in your notes.
 The plugin provides flexible navigation options:
  - **Left-click** a link to open the canvas in the current tab
  - **`Ctrl/Cmd + Click`** (or **Middle-click**) to open it in a new tab.
+![Link Handling](<Features Example.gif>)
 
 ### Easy Link Creation
 Create links effortlessly with multiple methods:
@@ -18,7 +20,7 @@ Create links effortlessly with multiple methods:
 - **Command Palette**: Select a single group and use the "Copy link to selected group" command.
 - **custom hotkey** for keyboard-driven workflows (Empty by default, assign to your liking (`CTRL + SHIFT + C` suggested))
 
-### Smart Notifications
+### Notifications
 The plugin provides helpful feedback to guide you:
 - Notify if you try to copy a link without a group selected.
 - Notify if you jump to a group name that is used multiple times in the same canvas.
@@ -58,9 +60,11 @@ Once you have a link in a note (e.g., `[[MyProject.canvas#Design Phase]]`), you 
 
 # Installation
 
-### From Obsidian Community Plugins (Coming Soon)
+### From Obsidian Community Plugins
 
-Once this plugin is approved by the Obsidian team, you will be able to install it directly from the community plugin browser.
+obsidian://show-plugin?id=canvas-link-to-group
+
+Or just type in search `Canvas Link to Group`
 
 ### Manual Installation
 
