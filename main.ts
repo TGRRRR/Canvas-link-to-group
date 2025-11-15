@@ -15,6 +15,58 @@ export default class CanvasLinkToGroupPlugin extends Plugin {
 			const linkTextFromData = link.getAttribute('data-href');
 			const linkTextFromContent = link.textContent;
 			const linkText = linkTextFromData || linkTextFromContent;
+			
+			// Check if this is an aliased link
+			const isAliasedLink = link.parentElement?.classList.contains('cm-link-alias');
+			
+			if (isAliasedLink && linkText) {
+				// For aliased links, we need to look up the actual link from the metadata cache
+				const currentFile = this.app.workspace.getActiveFile();
+				if (!currentFile) return;
+				
+				const fileCache = this.app.metadataCache.getFileCache(currentFile);
+				const links = fileCache?.links || [];
+				
+				// Find the link where this text is the displayText
+				for (const linkCache of links) {
+					const displayText = linkCache.displayText || linkCache.link;
+					if (displayText === linkText && linkCache.link.includes('.canvas#')) {
+						// Found it! Use the actual link
+						evt.preventDefault();
+						evt.stopImmediatePropagation();
+						
+						const sourceElement = target.closest('[data-source-path]');
+						let sourcePath = '';
+						if (sourceElement) {
+							sourcePath = sourceElement.getAttribute('data-source-path') || '';
+						} else {
+							const activeFile = this.app.workspace.getActiveFile();
+							if (activeFile) sourcePath = activeFile.path;
+						}
+						
+						const openInNewTab = evt.button === 1 || evt.ctrlKey || evt.metaKey;
+						this.handleCanvasLink(linkCache.link, sourcePath, openInNewTab);
+						break;
+					}
+				}
+			} else if (linkText && linkText.includes('.canvas#')) {
+				// Regular link - use existing logic
+				evt.preventDefault();
+				evt.stopImmediatePropagation();
+				
+				const sourceElement = target.closest('[data-source-path]');
+				let sourcePath = '';
+				if (sourceElement) {
+					sourcePath = sourceElement.getAttribute('data-source-path') || '';
+				} else {
+					const activeFile = this.app.workspace.getActiveFile();
+					if (activeFile) sourcePath = activeFile.path;
+				}
+				
+				const openInNewTab = evt.button === 1 || evt.ctrlKey || evt.metaKey;
+				this.handleCanvasLink(linkText, sourcePath, openInNewTab);
+			}
+			
 
 			// Use the new, simplified link format
 			if (linkText && linkText.includes('.canvas#')) {
@@ -110,11 +162,11 @@ export default class CanvasLinkToGroupPlugin extends Plugin {
 		});
 	}
 
-	// LINK CLICK HANDLER
+	// LINK CLICK HANDLER - UPDATED VERSION
 	async handleCanvasLink(linkText: string, sourcePath: string, newLeaf: boolean) {
 		// Use the new, simplified link format
 		const parts = linkText.split('#');
-		if (parts.length < 2 || !parts[1]) {
+		if (parts.length < 2 || !parts) {
 			return;
 		}
 
@@ -125,8 +177,9 @@ export default class CanvasLinkToGroupPlugin extends Plugin {
 		const activeView = this.app.workspace.getActiveViewOfType(ItemView);
 		if (activeView) {
 			this.jumpToGroup(groupName, activeView.leaf);
-		}		
+		}       
 	}
+
 
 	// JUMP TO GROUP LOGIC
 	jumpToGroup(groupName: string, leaf: WorkspaceLeaf) {

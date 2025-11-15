@@ -1,7 +1,7 @@
 {
 	"id": "canvas-link-to-group",
 	"name": "Canvas Link to Group",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"minAppVersion": "1.8.10",
 	"description": "Create links to specific groups in Canvas and jump directly to them.",
 	"author": "TGRRRR",
