@@ -1,7 +1,6 @@
 import { Plugin, TFile, Notice, WorkspaceLeaf, Menu, ItemView, EditorSuggest, Editor, EditorPosition, EditorSuggestContext, EditorSuggestTriggerInfo, App, EventRef } from 'obsidian';
 
 declare const activeDocument: Document;
-declare const activeWindow: Window;
 
 interface CanvasNodeData {
 	type: string;
@@ -152,12 +151,12 @@ export default class CanvasLinkToGroupPlugin extends Plugin {
 		const canvasView = leaf.view as CanvasView;
 
 		let retries = 50;
-		const intervalId = activeWindow.setInterval(() => {
+		const intervalId = window.setInterval(() => {
 			retries--;
 			const canvas = canvasView.canvas;
 
 			if (!canvas || !canvas.nodes || retries <= 0) {
-				activeWindow.clearInterval(intervalId);
+				window.clearInterval(intervalId);
 				return;
 			}
 
@@ -166,7 +165,7 @@ export default class CanvasLinkToGroupPlugin extends Plugin {
 			);
 
 			if (groupNodes.length > 0) {
-				activeWindow.clearInterval(intervalId);
+				window.clearInterval(intervalId);
 
 				if (groupNodes.length > 1) {
 					new Notice(`Found ${groupNodes.length} groups named "${groupName}". Jumping to the first one.`);

@@ -1,12 +1,23 @@
 import tseslint from "typescript-eslint";
 import obsidianmd from "eslint-plugin-obsidianmd";
 
-export default tseslint.config(
+export default [
 	{
-		ignores: ["**/node_modules/**", "main.js", "**/*.mjs", "scripts/deploy.js"],
+		ignores: [
+			"**/node_modules/**",
+			"main.js",
+			"**/*.mjs",
+			"scripts/deploy.js",
+			"package.json",
+		],
 	},
-	...tseslint.configs.recommendedTypeChecked,
+	...obsidianmd.configs.recommended,
+	...tseslint.configs.recommendedTypeChecked.map((config) => ({
+		...config,
+		files: ["**/*.ts"],
+	})),
 	{
+		files: ["**/*.ts"],
 		languageOptions: {
 			parserOptions: {
 				projectService: true,
@@ -16,17 +27,12 @@ export default tseslint.config(
 	},
 	{
 		files: ["**/*.ts"],
-		plugins: {
-			obsidianmd,
-		},
 		rules: {
-			...obsidianmd.configs.recommended.rules,
-			"@typescript-eslint/no-unused-vars": ["error", {
-				argsIgnorePattern: "^_",
-				varsIgnorePattern: "^_",
-			}],
-			"@typescript-eslint/no-floating-promises": "error",
-			"@typescript-eslint/no-explicit-any": "warn",
+			"@typescript-eslint/no-unused-vars": [
+				"error",
+				{ argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+			],
+			"no-console": ["error", { allow: ["warn", "error", "debug"] }],
 		},
 	},
-);
+];
