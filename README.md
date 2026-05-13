@@ -61,9 +61,9 @@ Once you have a link in a note (e.g., `[[MyProject.canvas#Design Phase]]`), you 
 - **`Ctrl/Cmd + Click`** or **Middle-click**: Opens the canvas in a new tab and jumps to the group.
 
 # Installation
-1. [Obsidian Community]https://community.obsidian.md/plugins/canvas-link-to-group
+[Obsidian Community - Canvas Link to Group](https://community.obsidian.md/plugins/canvas-link-to-group)
 
-2. Or just type in search `Canvas Link to Group`
+Or just type in search `Canvas Link to Group`
 
 # Attribution
 Based on the [Obsidian Sample Plugin template](https://github.com/obsidianmd/obsidian-sample-plugin)
