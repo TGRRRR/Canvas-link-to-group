@@ -14,16 +14,15 @@ export default class CanvasLinkToGroupPlugin extends Plugin {
 			if (evt.button !== 0 && evt.button !== 1) return;
 
 			const target = evt.target as HTMLElement;
-			const link = target.closest('a');
-			if (!link) return;
+			const linkEl = target.closest('.cm-hmd-internal-link, .internal-link, a[data-href]');
+			if (!linkEl) return;
 
-			const linkTextFromData = link.getAttribute('data-href');
-			const linkTextFromContent = link.textContent;
-			const linkText = linkTextFromData || linkTextFromContent;
+			const linkText = linkEl.getAttribute('data-href') || linkEl.textContent;
+			if (!linkText) return;
 
-			const isAliasedLink = link.parentElement?.classList.contains('cm-link-alias');
+			const isAliasedLink = linkEl.classList.contains('cm-link-alias') || linkEl.parentElement?.classList.contains('cm-link-alias');
 
-			if (isAliasedLink && linkText) {
+			if (isAliasedLink) {
 				const currentFile = this.app.workspace.getActiveFile();
 				if (!currentFile) return;
 
@@ -42,7 +41,7 @@ export default class CanvasLinkToGroupPlugin extends Plugin {
 						break;
 					}
 				}
-			} else if (linkText && linkText.includes('.canvas#')) {
+			} else if (linkText.includes('.canvas#')) {
 				evt.preventDefault();
 				evt.stopImmediatePropagation();
 
