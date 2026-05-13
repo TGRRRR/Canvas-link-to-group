@@ -61,22 +61,9 @@ Once you have a link in a note (e.g., `[[MyProject.canvas#Design Phase]]`), you 
 - **`Ctrl/Cmd + Click`** or **Middle-click**: Opens the canvas in a new tab and jumps to the group.
 
 # Installation
+1. [Obsidian Community]https://community.obsidian.md/plugins/canvas-link-to-group
 
-### From Obsidian Community Plugins
-
-obsidian://show-plugin?id=canvas-link-to-group
-
-Or just type in search `Canvas Link to Group`
-
-### Manual Installation
-
-1.  Download the `.zip` file from the latest [GitHub release](https://github.com/quorafind/obsidian-canvas-link-to-group/releases/latest).
-2.  Navigate to your Obsidian vault's plugins folder: `<YourVault>/.obsidian/plugins/`.
-3.  Create a new folder and name it `canvas-link-to-group`.
-4.  Extract the contents of the downloaded `.zip` file into this new folder.
-5.  In Obsidian, go to **Settings** > **Community plugins**.
-6.  Make sure "Restricted mode" is turned off. You should now see "Canvas Link to Group" in your list of installed plugins.
-7.  Click the "Reload plugins" button and then toggle the switch to enable it.
+2. Or just type in search `Canvas Link to Group`
 
 # Attribution
 Based on the [Obsidian Sample Plugin template](https://github.com/obsidianmd/obsidian-sample-plugin)
